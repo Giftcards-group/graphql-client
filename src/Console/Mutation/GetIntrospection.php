@@ -10,14 +10,14 @@ class GetIntrospection extends Command
 {
     protected static $defaultName = 'mutation:introspection';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Returns a instrospection query.')
             ->setHelp('Returns the introspection query needed to execute in your GraphQL server in order ' .
                 'to generate the needed file to generate the config.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(
             <<<'GQL'

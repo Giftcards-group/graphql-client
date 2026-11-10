@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\TransferException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -15,11 +16,11 @@ use UnexpectedValueException;
 
 class ClientTest extends TestCase
 {
-    private $httpClient;
+    private MockObject $httpClient;
 
-    private $mockGraphqlResponseBuilder;
+    private MockObject $mockGraphqlResponseBuilder;
 
-    private $client;
+    private Client $client;
 
     protected function setUp(): void
     {
@@ -28,7 +29,7 @@ class ClientTest extends TestCase
         $this->client                     = new Client($this->httpClient, $this->mockGraphqlResponseBuilder);
     }
 
-    public function testSimpleQueryWhenHasNetworkErrors()
+    public function testSimpleQueryWhenHasNetworkErrors(): void
     {
         $this->httpClient->expects($this->once())
             ->method('request')
@@ -41,7 +42,7 @@ class ClientTest extends TestCase
         $this->client->query($query);
     }
 
-    private function getSimpleQuery()
+    private function getSimpleQuery(): string
     {
         return <<<'QUERY'
 {
@@ -52,7 +53,7 @@ class ClientTest extends TestCase
 QUERY;
     }
 
-    public function testCanRetrievePreviousExceptionWhenSimpleQueryHasErrors()
+    public function testCanRetrievePreviousExceptionWhenSimpleQueryHasErrors(): void
     {
         $previousException = null;
         try {
@@ -75,7 +76,7 @@ QUERY;
         }
     }
 
-    public function testSimpleQueryWhenInvalidJsonIsReceived()
+    public function testSimpleQueryWhenInvalidJsonIsReceived(): void
     {
         $query = $this->getSimpleQuery();
 
@@ -90,11 +91,8 @@ QUERY;
                 'POST',
                 '',
                 [
-                    'body' => json_encode([
+                    'json' => [
                         'query' => $query,
-                    ], JSON_UNESCAPED_SLASHES),
-                    'headers' => [
-                        'Content-Type' => 'application/json',
                     ],
                 ]
             )
@@ -106,7 +104,7 @@ QUERY;
         $this->client->query($query);
     }
 
-    public function testSimpleQuery()
+    public function testSimpleQuery(): void
     {
         $mockResponse     = $this->createMock(Response::class);
         $mockHttpResponse = $this->createMock(ResponseInterface::class);
@@ -123,11 +121,8 @@ QUERY;
                 'POST',
                 '',
                 [
-                    'body' => json_encode([
+                    'json' => [
                         'query' => $query,
-                    ], JSON_UNESCAPED_SLASHES),
-                    'headers' => [
-                        'Content-Type' => 'application/json',
                     ],
                 ]
             )
@@ -137,7 +132,7 @@ QUERY;
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    public function testQueryWithVariables()
+    public function testQueryWithVariables(): void
     {
         $mockResponse     = $this->createMock(Response::class);
         $mockHttpResponse = $this->createMock(ResponseInterface::class);
@@ -158,12 +153,9 @@ QUERY;
                 'POST',
                 '',
                 [
-                    'body' => json_encode([
+                    'json' => [
                         'query' => $query,
                         'variables' => $variables,
-                    ], JSON_UNESCAPED_SLASHES),
-                    'headers' => [
-                        'Content-Type' => 'application/json',
                     ],
                 ]
             )
@@ -173,7 +165,7 @@ QUERY;
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    private function getQueryWithVariables()
+    private function getQueryWithVariables(): string
     {
         return <<<'QUERY'
 query GetFooBar($idFoo: String, $idBar: String) {
@@ -187,7 +179,7 @@ query GetFooBar($idFoo: String, $idBar: String) {
 QUERY;
     }
 
-    public function testMutate()
+    public function testMutate(): void
     {
         $mockResponse     = $this->createMock(Response::class);
         $mockHttpResponse = $this->createMock(ResponseInterface::class);
@@ -205,12 +197,9 @@ QUERY;
                 'POST',
                 '',
                 [
-                    'body' => json_encode([
+                    'json' => [
                         'query' => $query,
                         'variables' => $variables,
-                    ], JSON_UNESCAPED_SLASHES),
-                    'headers' => [
-                        'Content-Type' => 'application/json',
                     ],
                 ]
             )
@@ -220,7 +209,7 @@ QUERY;
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    private function getMutationQuery()
+    private function getMutationQuery(): string
     {
         return <<<'QUERY'
 mutation replaceFoo($foo: FooInput!) {
