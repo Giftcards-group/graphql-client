@@ -10,24 +10,17 @@ class Item extends AbstractItem implements MutationObject
     use MutationObjectHandler;
 
     /**
-     * @var array
-     */
-    protected $config;
-
-    /**
      * @var bool
      */
     private $hasChanged = false;
 
-    public function __construct(array $arguments = [], array $config = [], bool $hasChanged = false)
+    public function __construct(array $arguments = [], protected array $config = [], bool $hasChanged = false)
     {
         parent::__construct($arguments);
-
-        $this->config     = $config;
         $this->hasChanged = $hasChanged;
     }
 
-    public function __get(string $key)
+    public function __get(string $key): mixed
     {
         if ((!array_key_exists($key, $this->arguments) || ($this->arguments[$key] === null))
             && array_key_exists($key, $this->config)
@@ -41,7 +34,7 @@ class Item extends AbstractItem implements MutationObject
         return parent::__get($key);
     }
 
-    public function __set(string $key, $value): void
+    public function __set(string $key, mixed $value): void
     {
         if (!array_key_exists($key, $this->arguments) || $this->arguments[$key] !== $value) {
             $this->hasChanged = true;
