@@ -15,7 +15,9 @@ class ResponseBuilder
     {
         $body = $httpResponse->getBody();
         $headers = $httpResponse->getHeaders();
+
         $normalizedResponse = $this->getNormalizedResponse($body);
+
         $dataObject = array_key_exists('dataObject', $normalizedResponse)
             ? $normalizedResponse['dataObject']
             : [];

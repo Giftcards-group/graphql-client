@@ -18,7 +18,7 @@ class Client
      * @throws UnexpectedValueException When response body is not a valid json
      * @throws RuntimeException         When there are transfer errors
      */
-    public function query(string $query, ?array $variables = null, array $guzzleOptions = null): Response
+    public function query(string $query, ?array $variables = null, ?array $guzzleOptions = null): Response
     {
         return $this->executeQuery($query, $variables, $guzzleOptions);
     }
@@ -32,20 +32,20 @@ class Client
         return $this->executeQuery($query, $mutation);
     }
 
-    private function executeQuery(string $query, array|null|MutationObject $variables, array $guzzleOptions = null): Response
+    private function executeQuery(string $query, array|null|MutationObject $variables, ?array $guzzleOptions = null): Response
     {
-      $options = [
-        'json' => [
-          'query' => $query,
-        ],
-      ];
-      if (!is_null($variables)) {
-        $options['json']['variables'] = $variables;
-      }
+        $options = [
+            'json' => [
+                'query' => $query,
+            ],
+        ];
+        if (!is_null($variables)) {
+            $options['json']['variables'] = $variables;
+        }
 
-      if (!is_null($guzzleOptions)) {
-        $options = array_merge_recursive($options, $guzzleOptions);
-      }
+        if (!is_null($guzzleOptions)) {
+            $options = array_merge_recursive($options, $guzzleOptions);
+        }
 
         try {
             $response = $this->httpClient->request('POST', '', $options);
@@ -53,6 +53,6 @@ class Client
             throw new RuntimeException('Network Error.' . $e->getMessage(), 0, $e);
         }
 
-      return $this->responseBuilder->build($response);
+        return $this->responseBuilder->build($response);
     }
 }

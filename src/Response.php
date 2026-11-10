@@ -8,25 +8,28 @@ class Response
     {
     }
 
-  public function getData(): array {
-    return $this->data;
-  }
+    public function getData(): array
+    {
+        return $this->data;
+    }
 
-  public function getHeaders(): array {
-    return $this->headers;
-  }
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
 
-  public function getErrors(): array {
-    return $this->errors;
-  }
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
 
-  public function hasErrors(): bool
-  {
-      return $this->errors !== [];
-  }
+    public function hasErrors(): bool
+    {
+        return $this->errors !== [];
+    }
 
-  public function getDataObject(): array
-  {
-      return $this->dataObject;
-  }
+    public function getDataObject(): array
+    {
+        return $this->dataObject;
+    }
 }
